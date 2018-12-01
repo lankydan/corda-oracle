@@ -1,0 +1,128 @@
+buildscript {
+  ext.corda_release_group = 'net.corda'
+  ext.corda_release_version = '3.3-corda'
+//  ext.corda_release_group = 'com.r3.corda'
+//  ext.corda_release_version = '3.1'
+  ext.corda_gradle_plugins_version = '3.0.9'
+//  ext.corda_gradle_plugins_version = '4.0.25'
+  ext.kotlin_version = '1.2.50'
+  ext.junit_version = '4.12'
+  ext.quasar_version = '0.7.9'
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+  }
+
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath "net.corda.plugins:cordapp:$corda_gradle_plugins_version"
+    classpath "net.corda.plugins:cordformation:$corda_gradle_plugins_version"
+    classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
+  }
+}
+
+repositories {
+  mavenLocal()
+  jcenter()
+  mavenCentral()
+  maven { url 'https://dl.bintray.com/kotlin/exposed' }
+  maven { url 'https://jitpack.io' }
+  maven { url 'https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases' }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'net.corda.plugins.cordapp'
+apply plugin: 'net.corda.plugins.cordformation'
+apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+  cordapp project(":cordapp-node")
+  cordapp project(":cordapp-oracle")
+  cordapp project(":cordapp-contracts-states")
+}
+
+task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
+  directory "./build/nodes"
+  node {
+    name "O=Notary-0,L=London,C=GB"
+    notary = [validating: false]
+    p2pPort 10001
+    rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    rpcSettings {
+      address("localhost:10005")
+      adminAddress("localhost:10045")
+    }
+    cordapps = [
+      "$project.group:cordapp-contracts-states:$project.version",
+      "$project.group:cordapp-node:$project.version"
+    ]
+  }
+  node {
+    name "O=Notary-1,L=London,C=GB"
+    notary = [validating: false]
+    p2pPort 10004
+    rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    rpcSettings {
+      address("localhost:10008")
+      adminAddress("localhost:10048")
+    }
+    cordapps = [
+      "$project.group:cordapp-contracts-states:$project.version",
+      "$project.group:cordapp-node:$project.version"
+    ]
+  }
+  node {
+    name "O=Notary-2,L=London,C=GB"
+    notary = [validating: false]
+    p2pPort 10020
+    rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    rpcSettings {
+      address("localhost:10009")
+      adminAddress("localhost:10049")
+    }
+    cordapps = [
+      "$project.group:cordapp-contracts-states:$project.version",
+      "$project.group:cordapp-node:$project.version"
+    ]
+  }
+  node {
+    name "O=PartyA,L=London,C=GB"
+    p2pPort 10002
+    rpcSettings {
+      address("localhost:10006")
+      adminAddress("localhost:10046")
+    }
+    rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    cordapps = [
+      "$project.group:cordapp-contracts-states:$project.version",
+      "$project.group:cordapp-node:$project.version"
+    ]
+  }
+  node {
+    name "O=PartyB,L=London,C=GB"
+    p2pPort 10003
+    rpcSettings {
+      address("localhost:10007")
+      adminAddress("localhost:10047")
+    }
+    rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
+    cordapps = [
+      "$project.group:cordapp-contracts-states:$project.version",
+      "$project.group:cordapp-node:$project.version"
+    ]
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    languageVersion = "1.3"
+    apiVersion = "1.3"
+    jvmTarget = "1.8"
+    javaParameters = true // Useful for reflection.
+  }
+}

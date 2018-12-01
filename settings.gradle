@@ -1,0 +1,5 @@
+include 'cordapp-node'
+include 'cordapp-oracle'
+include 'cordapp-contracts-states'
+include 'app'
+
