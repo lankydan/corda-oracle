@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import net.corda.core.contracts.*
 import net.corda.core.crypto.SecureHash
-import com.lankydanblog.tutorial.states.StockState
+import com.lankydanblog.tutorial.states.StockGiftState
 import org.springframework.boot.jackson.JsonComponent
 
 @JsonComponent
 class ContractStateDeserialiser : JsonDeserializer<ContractState>() {
   override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ContractState {
-    return ctxt.readValue(p, StockState::class.java)
+    return ctxt.readValue(p, StockGiftState::class.java)
   }
 }
 

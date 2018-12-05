@@ -1,7 +1,7 @@
-package com.lankydanblog.tutorial.oracle.services
+package com.lankydanblog.tutorial.services
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.lankydanblog.tutorial.oracle.data.Stock
+import com.lankydanblog.tutorial.data.Stock
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
@@ -10,7 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 @CordaService
-class StockRetriever(private val serviceHub: AppServiceHub) :
+class StockRetriever(serviceHub: AppServiceHub) :
   SingletonSerializeAsToken() {
 
   private val client = OkHttpClient()
@@ -21,8 +21,16 @@ class StockRetriever(private val serviceHub: AppServiceHub) :
     val response = client.newCall(request(symbol)).execute()
     return response.body()?.let {
       log.info("Retrieved response for $symbol")
-      mapper.readValue(it.string(), Stock::class.java)
-    } ?: throw IllegalArgumentException("Stock with symbol: $symbol does not exist")
+      val json = it.string()
+      require(json != "Unknown symbol") { "Stock with symbol: $symbol does not exist" }
+      val tree = mapper.readTree(json)
+      Stock(
+        symbol = symbol,
+        name = tree["companyName"].asText(),
+        primaryExchange = tree["primaryExchange"].asText(),
+        price = tree["latestPrice"].asDouble()
+      )
+    } ?: throw IllegalArgumentException("No response")
   }
 
   private fun request(symbol: String) =

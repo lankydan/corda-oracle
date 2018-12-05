@@ -1,4 +1,4 @@
-package com.lankydanblog.tutorial.oracle.data
+package com.lankydanblog.tutorial.data
 
 data class Stock(
   val symbol: String,
