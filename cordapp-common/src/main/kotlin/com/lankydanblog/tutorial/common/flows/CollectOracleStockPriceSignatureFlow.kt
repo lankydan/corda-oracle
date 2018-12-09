@@ -1,4 +1,4 @@
-package com.lankydanblog.tutorial.flows
+package com.lankydanblog.tutorial.common.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import net.corda.core.crypto.TransactionSignature

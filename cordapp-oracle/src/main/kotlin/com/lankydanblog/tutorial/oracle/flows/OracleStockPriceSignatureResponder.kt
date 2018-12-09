@@ -1,8 +1,8 @@
 package com.lankydanblog.tutorial.oracle.flows
 
 import co.paralleluniverse.fibers.Suspendable
+import com.lankydanblog.tutorial.common.flows.CollectOracleStockPriceSignatureFlow
 import com.lankydanblog.tutorial.contracts.StockContract.Commands.GiveAway
-import com.lankydanblog.tutorial.flows.CollectOracleStockPriceSignatureFlow
 import com.lankydanblog.tutorial.oracle.services.StockPriceValidator
 import net.corda.core.contracts.Command
 import net.corda.core.flows.FlowException

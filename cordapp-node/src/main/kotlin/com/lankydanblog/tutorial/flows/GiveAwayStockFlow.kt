@@ -1,9 +1,10 @@
 package com.lankydanblog.tutorial.flows
 
 import co.paralleluniverse.fibers.Suspendable
+import com.lankydanblog.tutorial.common.flows.CollectOracleStockPriceSignatureFlow
+import com.lankydanblog.tutorial.common.services.StockRetriever
 import com.lankydanblog.tutorial.contracts.StockContract
 import com.lankydanblog.tutorial.contracts.StockContract.Commands.GiveAway
-import com.lankydanblog.tutorial.services.StockRetriever
 import com.lankydanblog.tutorial.states.StockGiftState
 import net.corda.core.contracts.Command
 import net.corda.core.flows.*

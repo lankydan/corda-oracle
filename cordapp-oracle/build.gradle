@@ -25,6 +25,7 @@ dependencies {
 
     cordapp project(":cordapp-contracts-states")
     cordapp project(":cordapp-node")
+    cordapp project(":cordapp-common")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

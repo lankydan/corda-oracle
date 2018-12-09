@@ -1,4 +1,4 @@
-package com.lankydanblog.tutorial.data
+package com.lankydanblog.tutorial.common.data
 
 data class Stock(
   val symbol: String,

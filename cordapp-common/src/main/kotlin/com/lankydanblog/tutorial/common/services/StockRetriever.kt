@@ -1,7 +1,7 @@
-package com.lankydanblog.tutorial.services
+package com.lankydanblog.tutorial.common.services
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.lankydanblog.tutorial.data.Stock
+import com.lankydanblog.tutorial.common.data.Stock
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken

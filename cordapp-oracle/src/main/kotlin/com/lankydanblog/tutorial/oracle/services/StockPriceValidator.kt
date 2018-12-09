@@ -1,6 +1,6 @@
 package com.lankydanblog.tutorial.oracle.services
 
-import com.lankydanblog.tutorial.services.StockRetriever
+import com.lankydanblog.tutorial.common.services.StockRetriever
 import net.corda.core.node.AppServiceHub
 import net.corda.core.node.services.CordaService
 import net.corda.core.serialization.SingletonSerializeAsToken
