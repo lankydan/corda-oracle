@@ -3,8 +3,10 @@
 ## Structure:
 
 * app: Spring code
-* cordapp: Corda application code
-* contracts-and-states: Contracts and states
+* cordapp-common: Corda common application code
+* cordapp-node: Corda node application code
+* cordapp-oracle: Corda oracle application code
+* cordapp-contracts-and-states: Contracts and states
 
 ## Pre-requisites:
 
@@ -37,22 +39,14 @@ Both approaches use environment variables to set:
 
 Send a stock via a post request
 
-    `localhost:10011/messages`
+    `localhost:10011/stock/gift`
 
 with a body like
 ```json
 {
-    "recipient": "O=PartyB,L=London,C=GB",
-    "contents": "this is a temporary stock",
-    "type": "email"
+	"symbol":"acn",
+	"amount":100,
+	"recipient":"O=PartyB,L=London,C=GB"
 }
 ```
-
-Reply to all messages via a post request
-
-    `localhost:10012/messages/replyAll`
-    
-Delete all messages via a post request
-
-    `localhost:10011/messages/deleteAllByParty?party=O=PartyB,L=London,C=GB`
 Most importantly my blog can be found at [www.lankydanblog.com](https://lankydanblog.com) and you can follow me on Twitter at [@LankyDanDev](https://twitter.com/LankyDanDev)

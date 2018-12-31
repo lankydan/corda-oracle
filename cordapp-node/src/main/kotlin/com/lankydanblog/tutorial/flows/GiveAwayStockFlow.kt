@@ -41,8 +41,14 @@ class GiveAwayStockFlow(
     serviceHub.networkMapCache.getPeerByLegalName(CordaX500Name.parse(recipient))
       ?: throw IllegalArgumentException("Party does not exist")
 
-  private fun priceOfStock(): Double =
-    serviceHub.cordaService(StockRetriever::class.java).getCurrent(symbol).price
+  private fun oracle(): Party = serviceHub.networkMapCache.getPeerByLegalName(
+    CordaX500Name(
+      "Oracle",
+      "London",
+      "GB"
+    )
+  )
+    ?: throw IllegalArgumentException("Oracle does not exist")
 
   @Suspendable
   private fun collectRecipientSignature(
@@ -74,14 +80,8 @@ class GiveAwayStockFlow(
       )
     }
 
-  private fun oracle(): Party = serviceHub.networkMapCache.getPeerByLegalName(
-    CordaX500Name(
-      "Oracle",
-      "London",
-      "GB"
-    )
-  )
-    ?: throw IllegalArgumentException("Oracle does not exist")
+  private fun priceOfStock(): Double =
+    serviceHub.cordaService(StockRetriever::class.java).getCurrent(symbol).price
 
   private fun state(party: Party, priceOfStock: Double): StockGiftState =
     StockGiftState(
@@ -93,6 +93,16 @@ class GiveAwayStockFlow(
 
   private fun notary(): Party = serviceHub.networkMapCache.notaryIdentities.first()
 
+  @Suspendable
+  private fun collectOracleSignature(
+    transaction: SignedTransaction,
+    oracle: Party
+  ): SignedTransaction {
+    val filtered = filteredTransaction(transaction, oracle)
+    val signature = subFlow(CollectOracleStockPriceSignatureFlow(oracle, filtered))
+    return transaction.withAdditionalSignature(signature)
+  }
+
   private fun filteredTransaction(
     transaction: SignedTransaction,
     oracle: Party
@@ -103,16 +113,6 @@ class GiveAwayStockFlow(
         else -> false
       }
     })
-
-  @Suspendable
-  private fun collectOracleSignature(
-    transaction: SignedTransaction,
-    oracle: Party
-  ): SignedTransaction {
-    val filtered = filteredTransaction(transaction, oracle)
-    val signature = subFlow(CollectOracleStockPriceSignatureFlow(oracle, filtered))
-    return transaction.withAdditionalSignature(signature)
-  }
 }
 
 @InitiatedBy(GiveAwayStockFlow::class)
